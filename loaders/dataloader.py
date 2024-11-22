@@ -5,11 +5,16 @@
 """
 import os
 import glob
-#import torch
+import torch
+import cv2
 
-#from torch.data.utils import DataLoader, Dataset
+from typing import Tuple
+from torch.utils.data import DataLoader, Dataset
 
-class OccupancyDataset:#(Dataset):
+from preprocess import OccupancyPreProcessor
+from masker import OccupancyMasker
+
+class OccupancyDataset(Dataset):
 
     def __init__(self, path : str) -> None:
         # get all the files
@@ -19,21 +24,32 @@ class OccupancyDataset:#(Dataset):
 
         for folder in os.listdir(path):
             cpath = os.path.join(path,folder)
-            self.files_ = self.files_ + [os.path.join(cpath,item) for item in os.listdir(cpath) if "labelTrainIds" in item]
+            self.files_ = self.files_ + [os.path.join(cpath,item) for item in os.listdir(cpath) if "labelTrainIds_viz" in item]
+
+        self.preprocessor_ = OccupancyPreProcessor()
+        self.masker_ = OccupancyMasker()
+
+    @property
+    def preprocessor(self) -> OccupancyPreProcessor:
+        return self.preprocessor_
 
     def __len__(self) -> int:
         return len(self.files_)
 
-    def __get_item__(self, iter : int) -> torch.Tensor:
+    def __getitem__(self, iter : int) -> Tuple[torch.Tensor, torch.Tensor]:
         # load an image 
         raw_img = cv2.imread(self.files_[iter])
+        raw_img = cv2.resize(raw_img, (64,64), interpolation=cv2.INTER_NEAREST)
+        class_img = self.preprocessor_.color2Class(raw_img)
+        grid = self.preprocessor_.class2Occupancy(class_img)
+
         # mask the image
-
+        input_img = self.masker_.mask(grid) 
         # tensor transforms
-    
-        # return the image
-
-        return
+        label = torch.tensor(grid)
+        exmpl = torch.tensor(input_img)
+        #return raw_img, class_img
+        return exmpl, label
 
 if __name__ == "__main__":
     OccupancyDataset("../data")

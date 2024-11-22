@@ -5,25 +5,39 @@
 """
 
 import os 
+import yaml
 import numpy as np
 
 class OccupancyPreProcessor:
 
     def __init__(self) -> None:
         
-        self.class_map = [
-            np.array([255,0,0]),   # road
-            np.array([0,255,0]),   # tree
-            np.array([0,0,255]),   # building
-            np.array([0,100,0]),   # grass
-            np.array([255,255,0]), # car
-            np.array([255,0,255]), # human
-            np.array([100,100,0])  # gravel
-        ]
+        with open('class_map.yaml','r') as f:
+            self.class_map_ = yaml.safe_load(f)
+
+        with open('occupancy.yaml','r') as f:
+            self.occupancy_ = yaml.safe_load(f)
+
 
 
     def color2Class(self, img : np.ndarray) -> np.ndarray:
         mat = np.zeros((img.shape[0], img.shape[1]))
-        for i, cls in enumerate(self.class_map_):
-            cls_mask = np.all(img == cls, axis=-1)
-            mat += ((i+1) + mat)
+        for cls in self.class_map_.keys():
+            mask = np.all(img == self.class_map_[cls]['code'], axis=-1).astype(np.uint8)
+            mask = mask * cls
+            mat += mask
+
+        return mat
+
+    def class2Occupancy(self, mask : np.ndarray) -> np.ndarray:
+        #free_grid = np.where(np.isin(mask,self.occupancy_["free_int"]))
+        #grid = np.where(np.isin(free_grid,self.occupancy_["occupied_int"]), 0)
+        grid = np.isin(mask, self.occupancy_["free_int"])
+
+        return grid
+
+    def makeOccupancyViz(self, grid : np.ndarray) -> np.ndarray:
+        grid = np.where(grid == 1, 255, grid)
+        grid = np.where(grid == 2, 128, grid)
+
+        return grid

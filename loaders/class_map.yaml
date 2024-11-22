@@ -9,7 +9,7 @@
   code: [0,0,255]
 4:
   name: grass
-  code: [0,100,0]
+  code: [0,128,0]
 5:
   name: car
   code: [255,255,0]
@@ -18,4 +18,4 @@
   code: [255,0,255]
 7:
   name: gravel
-  code: [100,100,0]
+  code: [128,128,0]
