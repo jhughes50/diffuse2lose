@@ -7,7 +7,7 @@ import os
 import glob
 import torch
 import cv2
-
+import numpy as np
 from typing import Tuple
 from torch.utils.data import DataLoader, Dataset
 
@@ -36,7 +36,7 @@ class OccupancyDataset(Dataset):
     def __len__(self) -> int:
         return len(self.files_)
 
-    def __getitem__(self, iter : int) -> Tuple[torch.Tensor, torch.Tensor]:
+    def __getitem__(self, iter : int) -> Tuple[np.ndarray, torch.Tensor, torch.Tensor]:
         # load an image 
         raw_img = cv2.imread(self.files_[iter])
         raw_img = cv2.resize(raw_img, (64,64), interpolation=cv2.INTER_NEAREST)
@@ -49,7 +49,7 @@ class OccupancyDataset(Dataset):
         label = torch.tensor(grid)
         exmpl = torch.tensor(input_img)
         #return raw_img, class_img
-        return exmpl, label
+        return raw_img, exmpl, label
 
 if __name__ == "__main__":
     OccupancyDataset("../data")
