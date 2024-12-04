@@ -10,7 +10,7 @@ import numpy as np
 class OccupancyMasker:
 
     def __init__(self):
-        with open('occupancy.yaml', 'r') as f:
+        with open('/home/jason/loaders/occupancy.yaml', 'r') as f:
             self.occupancy_map_ = yaml.safe_load(f)
         self.occupied_int_ = self.occupancy_map_["occupied_int"]
 
@@ -26,3 +26,10 @@ class OccupancyMasker:
                 result[one_indices[-1], col] = 1
         
         return result
+    
+    def training_mask(self, img : np.ndarray) -> np.ndarray:
+        mask = np.zeros_like(img, dtype='bool')
+        indices = np.argwhere(img == 2)
+        mask[indices[:,0], indices[:,1]] = 1 
+
+        return mask

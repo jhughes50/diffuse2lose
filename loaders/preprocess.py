@@ -12,10 +12,10 @@ class OccupancyPreProcessor:
 
     def __init__(self) -> None:
         
-        with open('class_map.yaml','r') as f:
+        with open('/home/jason/loaders/class_map.yaml','r') as f:
             self.class_map_ = yaml.safe_load(f)
 
-        with open('occupancy.yaml','r') as f:
+        with open('/home/jason/loaders/occupancy.yaml','r') as f:
             self.occupancy_ = yaml.safe_load(f)
 
 

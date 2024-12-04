@@ -10,5 +10,8 @@ docker run --rm -it --gpus '"device=0"' \
     -e XAUTHORITY=$XAUTH \
     -v "./data:/home/jason/data" \
     -v "./loaders:/home/jason/loaders" \
+    -v "./utils:/home/jason/utils" \
+    -v "./logs:/home/jason/logs" \
+    -v "./tune.py:/home/jason/tune.py" \
     diffuse2lose:dev \
     bash

@@ -11,8 +11,8 @@ import numpy as np
 from typing import Tuple
 from torch.utils.data import DataLoader, Dataset
 
-from preprocess import OccupancyPreProcessor
-from masker import OccupancyMasker
+from .preprocess import OccupancyPreProcessor
+from .masker import OccupancyMasker
 
 class OccupancyDataset(Dataset):
 
@@ -36,7 +36,7 @@ class OccupancyDataset(Dataset):
     def __len__(self) -> int:
         return len(self.files_)
 
-    def __getitem__(self, iter : int) -> Tuple[np.ndarray, torch.Tensor, torch.Tensor]:
+    def __getitem__(self, iter : int) -> Tuple[torch.Tensor, torch.Tensor]:
         # load an image 
         raw_img = cv2.imread(self.files_[iter])
         raw_img = cv2.resize(raw_img, (64,64), interpolation=cv2.INTER_NEAREST)
@@ -44,12 +44,16 @@ class OccupancyDataset(Dataset):
         grid = self.preprocessor_.class2Occupancy(class_img)
 
         # mask the image
-        input_img = self.masker_.mask(grid) 
+        input_img = self.masker_.mask(grid)
+        mask = self.masker_.training_mask(input_img)
         # tensor transforms
-        label = torch.tensor(grid)
-        exmpl = torch.tensor(input_img)
+        label = torch.tensor(grid).unsqueeze(0)
+        mask = torch.tensor(mask).to(torch.uint8).unsqueeze(0)
+        exmpl = torch.tensor(input_img).unsqueeze(0)
+        three_channel_exmpl = exmpl.repeat(3,1,1)
+        three_channel_label = label.repeat(3,1,1)
         #return raw_img, class_img
-        return raw_img, exmpl, label
+        return (three_channel_exmpl, mask, three_channel_label)
 
 if __name__ == "__main__":
     OccupancyDataset("../data")

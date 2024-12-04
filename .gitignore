@@ -3,3 +3,5 @@
 **/*.jpeg
 **/*.npz
 **/__pycache__/
+./data/
+./logs/
