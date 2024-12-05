@@ -16,11 +16,12 @@ from .masker import OccupancyMasker
 
 class OccupancyDataset(Dataset):
 
-    def __init__(self, path : str) -> None:
+    def __init__(self, path : str, channels : int = 1) -> None:
         # get all the files
         self.files_ = list()
         self.path_ = path
         self.folders_ = os.listdir(path)
+        self.channels_ = channels
 
         for folder in os.listdir(path):
             cpath = os.path.join(path,folder)
@@ -50,10 +51,11 @@ class OccupancyDataset(Dataset):
         label = torch.tensor(grid).unsqueeze(0)
         mask = torch.tensor(mask).to(torch.uint8).unsqueeze(0)
         exmpl = torch.tensor(input_img).unsqueeze(0)
-        three_channel_exmpl = exmpl.repeat(3,1,1)
-        three_channel_label = label.repeat(3,1,1)
+        if self.channels_ != 1:
+            exmpl = exmpl.repeat(channels,1,1)
+            label = label.repeat(channels,1,1)
         #return raw_img, class_img
-        return (three_channel_exmpl, mask, three_channel_label)
+        return (exmpl, mask, label)
 
 if __name__ == "__main__":
     OccupancyDataset("../data")
