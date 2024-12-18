@@ -42,6 +42,7 @@ if __name__ == "__main__":
 
     model_id = "stabilityai/stable-diffusion-2-inpainting"
     pipeline = StableDiffusionInpaintPipeline.from_pretrained(model_id, torch_dtype=torch.float16)
+    pipeline.unet.from_pretrained("path")
     pipeline.to(device)
     #unet = pipeline.unet
     #vae = pipeline.vae

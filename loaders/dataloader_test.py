@@ -14,8 +14,9 @@ if __name__ == "__main__":
     print(len(dataset))
     for i, ds in enumerate(dataset):
         print("here")
-        ri, img, label = ds
-        
+        img, mask, label, ri =  ds
+        img = img.squeeze()
+        label = label.squeeze()
         vimg = dataset.preprocessor.makeOccupancyViz(img.numpy())
         vlabel = dataset.preprocessor.makeOccupancyViz(label.numpy())
         cv2.imwrite("label%i.png" %i, vlabel)

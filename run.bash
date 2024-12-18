@@ -8,12 +8,12 @@ docker run --rm -it --gpus '"device=0"' \
     -e DISPLAY=$DISPLAY \
     -e QT_X11_NO_MITSHM=1 \
     -e XAUTHORITY=$XAUTH \
-    -v "./data:/home/jason/data" \
-    -v "./loaders:/home/jason/loaders" \
-    -v "./utils:/home/jason/utils" \
-    -v "./logs:/home/jason/logs" \
-    -v "./tune.py:/home/jason/tune.py" \
-    -v "./train_vae.py:/home/jason/train_vae.py" \
-    -v "./models:/home/jason/models" \
+    -v "./data:/home/`whoami`/data" \
+    -v "./loaders:/home/`whoami`/loaders" \
+    -v "./utils:/home/`whoami`/utils" \
+    -v "./logs:/home/`whoami`/logs" \
+    -v "./train:/home/`whoami`/train" \
+    -v "./models:/home/`whoami`/models" \
+    -v "./eval:/home/`whoami`/eval" \
     diffuse2lose:dev \
     bash

@@ -23,17 +23,19 @@ class OccupancyPreProcessor:
     def color2Class(self, img : np.ndarray) -> np.ndarray:
         mat = np.zeros((img.shape[0], img.shape[1]))
         for cls in self.class_map_.keys():
+            #print(cls)
+            #print(self.class_map_[cls])
             mask = np.all(img == self.class_map_[cls]['code'], axis=-1).astype(np.uint8)
             mask = mask * cls
             mat += mask
-
+        #print(mat)
         return mat
 
     def class2Occupancy(self, mask : np.ndarray) -> np.ndarray:
         #free_grid = np.where(np.isin(mask,self.occupancy_["free_int"]))
         #grid = np.where(np.isin(free_grid,self.occupancy_["occupied_int"]), 0)
         grid = np.isin(mask, self.occupancy_["free_int"])
-
+        #print(grid)
         return grid
 
     def makeOccupancyViz(self, grid : np.ndarray) -> np.ndarray:

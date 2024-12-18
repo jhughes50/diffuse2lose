@@ -8,8 +8,9 @@ from typing import List
 
 class Logger:
 
-    def __init__(self, path:str="./logs/") -> None:
+    def __init__(self, path : str = "./logs/") -> None:
         self.path_ = path
+        print(self.path_)
         with open(self.path_+"epoch_average.txt", "x") as f:
             pass
 
