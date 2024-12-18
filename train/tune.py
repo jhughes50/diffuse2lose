@@ -6,6 +6,8 @@
 
 """
 import torch
+import sys
+sys.path.append("/home/jason")
 
 from loaders.dataloader import OccupancyDataset
 from utils.logger import Logger
@@ -27,11 +29,11 @@ def post_process(img : Image) -> torch.Tensor:
 
 if __name__ == "__main__":
 
-    dataset = OccupancyDataset("./data")
+    dataset = OccupancyDataset("/home/jason/data")
     train_size = int(0.8 * len(dataset))
     val_size = len(dataset) - train_size
 
-    logger = Logger()
+    #logger = Logger()
 
     train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
 
